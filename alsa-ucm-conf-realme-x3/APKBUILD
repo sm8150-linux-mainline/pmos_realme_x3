@@ -1,0 +1,24 @@
+# Maintainer: Patriot-06 <mbmc172@gmail.com>
+
+pkgname=alsa-ucm-conf-realme-x3
+pkgver=1
+pkgrel=0
+pkgdesc="ALSA UCM configuration for Realme X3"
+url="https://gitlab.com/Patriot-06/alsa-ucm-conf"
+arch="aarch64"
+license="BSD-3-Clause"
+provides="alsa-ucm-conf"
+provider_priority=1
+_commit="53f3949f794fd6e0ca816c8ed82cdf2d254645cf"
+source="https://gitlab.com/Patriot-06/alsa-ucm-conf/-/archive/$_commit/alsa-ucm-conf-$_commit.tar.gz"
+options="!check"
+
+package() {
+	# install audio config files
+	mkdir -p "$pkgdir"/usr/share/alsa/ucm2/
+	cp -r "$srcdir/alsa-ucm-conf-$_commit"/ucm2 "$pkgdir"/usr/share/alsa/
+}
+
+sha512sums="
+61d055c5275b5ae3ea0a85d92bd771c80d06eb03b8fcc9694671c62aa8bdcf6cee42889ed74d81ced10beec02517e2c3d6d1e20cb4fa37739a96c80815f23087  alsa-ucm-conf-53f3949f794fd6e0ca816c8ed82cdf2d254645cf.tar.gz
+"

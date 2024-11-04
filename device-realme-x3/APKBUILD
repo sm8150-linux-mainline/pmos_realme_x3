@@ -1,0 +1,85 @@
+# Reference: <https://postmarketos.org/devicepkg>
+# Maintainer: Patriot-06 <mbmc172@gmail.com>
+
+pkgname=device-realme-x3
+pkgdesc="Realme X3"
+pkgver=1
+pkgrel=0
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	postmarketos-base
+	mkbootimg
+	alsa-ucm-conf-realme-x3 
+	linux-realme-x3
+	mesa-vulkan-freedreno
+	swclock-offset
+"
+makedepends="devicepkg-dev"
+source="
+	deviceinfo
+	30-initramfs-firmware.files
+	51-qcom-sm8150.lua
+	modules-initfs
+"
+
+subpackages="
+	$pkgname-nonfree-firmware:nonfree_firmware
+	$pkgname-mainline-firmware:mainline_firmware
+	$pkgname-wireplumber
+"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+}
+
+mainline_firmware() {
+	pkgdesc="Firmware support packages for mainline kernel"
+	depends="firmware-realme-x3-adreno"
+	install_if="linux-realme-x3 $pkgname-nonfree-firmware"
+	mkdir "$subpkgdir"
+
+	install -Dm644 "$srcdir/30-initramfs-firmware.files" \
+		"$subpkgdir/etc/postmarketos-mkinitfs/files/30-initramfs-firmware.files"
+}
+
+nonfree_firmware() {
+	pkgdesc="Firmware for GPU, Touschreen, Audio, Bluetooth, WiFi, etc."
+	depends="
+		firmware-realme-x3-adreno
+		firmware-realme-x3-adsp
+		firmware-realme-x3-cdsp
+		firmware-realme-x3-modem
+		firmware-realme-x3-wlan
+		firmware-realme-x3-bluetooth
+		firmware-realme-x3-venus
+		firmware-realme-x3-touchscreen
+		msm-modem
+		pd-mapper
+		pd-mapper-openrc
+		tqftpserv
+		tqftpserv-openrc
+		bootmac
+		alsa-utils
+		"
+	install="$subpkgname.post-install"
+	mkdir "$subpkgdir"
+}
+
+wireplumber() {
+	install -Dm644 "$srcdir"/51-qcom-sm8150.lua \
+		-t "$subpkgdir"/usr/share/wireplumber/main.lua.d
+}
+
+sha512sums="
+594cdfcc0ea28991aa9d238fe2cf5248d05fb5e1ba4acbc36197687dfeb9d15037a1e4c0f5bb4a950670a8de8989468104cc4fc0144f6029dd2fa9d8fac3a6f6  deviceinfo
+281ddbbd0cc49f54debed63d4531b5b3154b7c1ff9b5482d4b5b8cf655ddb9972f2a21b889db0bde5b9607dd298c9ed9b61c9772f1d0544a5e103da73d4dcf4f  30-initramfs-firmware.files
+d97601fd5bd36c5710c9a122e400cdd0aecf37df7088bfef4490aef2356f15533cdf70e47e3a270cd77d5384ac1fcdc9c6ea46e314c3b88db26bfc8d86fdadce  51-qcom-sm8150.lua
+dbf6f3280cda66914be3215d771105b2994fc2e76c69d461c63ddbb914fe7882432a4d8c8a2590288c660ae4a834c2ddf0f7282a87c87c965631574db38c5a1c  modules-initfs
+"
